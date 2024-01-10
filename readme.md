@@ -14,7 +14,7 @@ This Django project uses Docker Compose to containerize the application, making 
 To build and start the Docker containers for the Django application, database, etc., use the following command:
 
 ```bash
-docker-compose up --build -d
+docker-compose up --build
 ```
 
 ## Access the Application
