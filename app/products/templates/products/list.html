@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Product List</h1>
+
+    <!-- Filter Form -->
+    <form method="get" class="row mb-4">
+        <div class="col-md-12">
+            {{ filter.form.name|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ filter.form.category|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ filter.form.tags|as_crispy_field }}
+        </div>
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-block">Filter</button>
+        </div>
+    </form>
+
+    <div class="list-group mt-4 mb-4">
+        {% for product in products %}
+        <li class="list-group-item pt-2">
+            Product name: {{ product.name }}<br>
+            Category: {{ product.category }}<br>
+            <ul>
+                {% for tag in product.tags.all %}
+                <li>{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No products available.</li>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation example">
+        {% if is_paginated %}
+
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-primary mb-4" href="?page=1&{{ request.GET.urlencode|cut:'page' }}">First</a>
+                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'page' }}">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-primary mb-4" href="?page={{ num }}&{{ request.GET.urlencode|cut:'page' }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-primary mb-4" href="?page={{ num }}&{{ request.GET.urlencode|cut:'page' }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'page' }}">Next</a>
+                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode|cut:'page' }}">Last</a>
+            {% endif %}
+
+        {% endif %}
+    </nav>
+</div>
+{% endblock %}
