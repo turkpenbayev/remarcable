@@ -19,3 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
     def get_tags(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('category').prefetch_related('tags')
